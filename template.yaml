@@ -1,4 +1,3 @@
-AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
   An AWS Serverless Application.
@@ -13,36 +12,16 @@ Parameters:
     Description: Name of this repository.
 
 Resources:
-  MainFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: ServerlessLambda6-Cloudformation
-      Description: Serverless lambda function with dotnet runtime
-      Handler: ServerlessLambda6::ServerlessLambda6.Functions::Main
-      Runtime: dotnet6
-      Role: !Sub ${LambdaFunctionRole}
-      CodeUri:
-        Bucket: artifact-bucket-gh128
-        Key: !Sub ${DirectoryCode}/code.zip
-      Events:
-        ServerlessApiGETServerlessLambda6:
-          Type: Api
-          Properties:
-            Path: /ServerlessLambda6
-            Method: GET
-            RestApiId: !Ref ServerlessApi
-      MemorySize: 256
-      Timeout: 3
-
   ServerlessApi:
     Type: AWS::Serverless::Api
     Properties:
+      Name: ServerlessApi From Stack ${AWS::StackName}
       StageName: Prod
       DefinitionBody:
-        openapi: "3.0"
+        openapi: '3.0'
         info: {}
         paths:
-          /ServerlessLambda6:
+          /:
             get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
@@ -52,12 +31,24 @@ Resources:
       EndpointConfiguration:
         Type: REGIONAL
       TracingEnabled: true
-
-Outputs:
-  ApiGetURL:
-    Description: API endpoint URL for Prod environment
-    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ServerlessLambda6
-
-  LambdaARN:
-    Description: ARN lambda function
-    Value: !GetAtt MainFunction.Arn
+  
+  MainFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: ServerlessLambda6
+      CodeUri:
+        Bucket: artifact-bucket-gh128
+        Key: !Sub ${DirectoryCode}/code.zip
+      Handler: ServerlessLambda6::ServerlessLambda6.Functions::Main
+      Role: !Sub ${LambdaFunctionRole}
+      Runtime: dotnet6
+      MemorySize: 128
+      Timeout: 3
+      Tracing: Active
+      Events:
+        ServerlessApiGET:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref ServerlessApi
