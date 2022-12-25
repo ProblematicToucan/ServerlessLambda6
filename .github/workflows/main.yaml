@@ -6,14 +6,13 @@ name: .NET Core Build Testing + CloudFormation
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-    
-    
+    branches: ["main"]
+
 env:
   REPO_NAME: ${{ github.event.repository.name }}
-   
+
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
@@ -35,13 +34,13 @@ jobs:
         run: dotnet restore ./test/ServerlessLambda6.Tests/ServerlessLambda6.Tests.csproj --runtime linux-x64
 
       - name: Build project
-        run: dotnet build ./test/ServerlessLambda6.Tests/ServerlessLambda6.Tests.csproj --no-restore --configuration Release
+        run: dotnet build ./test/ServerlessLambda6.Tests/ServerlessLambda6.Tests.csproj --no-restore
 
       - name: Testing
         run: dotnet test test/ServerlessLambda6.Tests/ServerlessLambda6.Tests.csproj --no-build --verbosity normal
 
       - name: Publish
-        run: dotnet publish ./src/ServerlessLambda6/ServerlessLambda6.csproj -o ./artifact/publish --no-self-contained --no-build
+        run: dotnet publish ./src/ServerlessLambda6/ServerlessLambda6.csproj -o ./artifact/publish --no-self-contained --no-build --configuration Release
 
       - name: Zipping Published File
         uses: thedoctor0/zip-release@main
