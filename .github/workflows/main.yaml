@@ -95,3 +95,4 @@ jobs:
             LambdaFunctionRole=${{ secrets.LAMBDA_FUNCTION_ROLE_NOLOGS }},
             DirectoryCode=${{ env.REPO_NAME }}
           no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_AUTO_EXPAND
