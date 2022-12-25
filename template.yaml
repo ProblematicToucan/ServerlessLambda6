@@ -15,7 +15,7 @@ Resources:
   ServerlessApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: ServerlessApi From Stack ${AWS::StackName}
+      Name: !Sub ServerlessApi From Stack ${AWS::StackName}
       StageName: Prod
       DefinitionBody:
         openapi: '3.0'
