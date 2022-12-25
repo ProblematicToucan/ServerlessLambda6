@@ -1,12 +1,13 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
+Description: |
   An AWS Serverless Application.
 
 Parameters:
   LambdaFunctionRole:
     Type: String
     Description: Role that used for lambda function.
+
   DirectoryCode:
     Type: String
     Description: Name of this repository.
@@ -24,17 +25,40 @@ Resources:
         Bucket: artifact-bucket-gh128
         Key: !Sub ${DirectoryCode}/code.zip
       Events:
-        MainGet:
+        ServerlessApiGETServerlessLambda6:
           Type: Api
           Properties:
-            Path: "/get"
+            Path: /ServerlessLambda6
             Method: GET
+            RestApiId: !Ref ServerlessApi
+      MemorySize: 256
+      Timeout: 3
+
+  ServerlessApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub ${ServerlessApi} From Stack ${AWS::StackName}
+      StageName: Prod
+      DefinitionBody:
+        openapi: '3.0'
+        info: {}
+        paths:
+          /ServerlessLambda6:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MainFunction.Arn}/invocations
+              responses: {}
+      EndpointConfiguration:
+        Type: REGIONAL
+      TracingEnabled: true
 
 Outputs:
   ApiGetURL:
     Description: API endpoint URL for Prod environment
-    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get/
-
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ServerlessLambda6
+    
   LambdaARN:
     Description: ARN lambda function
     Value: !GetAtt MainFunction.Arn
