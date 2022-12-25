@@ -12,7 +12,7 @@ Parameters:
     Description: Name of this repository.
 
 Resources:
-  LambdaFunction:
+  MainFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: ServerlessLambda6-Cloudformation
@@ -37,4 +37,4 @@ Outputs:
 
   LambdaARN:
     Description: ARN lambda function
-    Value: !GetAtt LambdaFunction.arn
+    Value: !GetAtt MainFunction.Arn
