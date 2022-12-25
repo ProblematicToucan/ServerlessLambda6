@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: > 
+  An AWS Serverless Application.
+
+Parameters:
+  LambdaFunctionRole:
+    Type: String
+    Description: Role that used for lambda function.
+
+Resources:
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ServerlessLambda6-Cloudformation
+      Description: Serverless lambda function with dotnet runtime
+      Handler: ServerlessLambda6::ServerlessLambda6.Functions::Main
+      Runtime: dotnet6
+      CodeUri:
+        Bucket: artifact-bucket-gh128
+        Key: serverlesslambda6/code.zip
+      Timeout: 3
+      Role: !Sub ${{ LambdaFunctionRole }}
+      Events:
+        RootGet:
+          Type: Api
+          Properties:
+            Path: "/get"
+            Method: GET
+
+Outputs:
+  ApiGetURL:
+    Description: API endpoint URL for Prod environment
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get/
+
+  LambdaURI:
+    Description: URI lambda function
+    Value: !GetAtt LambdaFunction.arn
