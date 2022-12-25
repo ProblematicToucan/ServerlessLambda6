@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
   An AWS Serverless Application.
@@ -37,10 +37,9 @@ Resources:
   ServerlessApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub ${ServerlessApi} From Stack ${AWS::StackName}
       StageName: Prod
       DefinitionBody:
-        openapi: '3.0'
+        openapi: "3.0"
         info: {}
         paths:
           /ServerlessLambda6:
@@ -58,7 +57,7 @@ Outputs:
   ApiGetURL:
     Description: API endpoint URL for Prod environment
     Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ServerlessLambda6
-    
+
   LambdaARN:
     Description: ARN lambda function
     Value: !GetAtt MainFunction.Arn
