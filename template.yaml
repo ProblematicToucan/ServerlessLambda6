@@ -19,7 +19,7 @@ Resources:
       Description: Serverless lambda function with dotnet runtime
       Handler: ServerlessLambda6::ServerlessLambda6.Functions::Main
       Runtime: dotnet6
-      Role: !Sub ${{ LambdaFunctionRole }}
+      Role: !Sub ${LambdaFunctionRole}
       CodeUri:
         Bucket: artifact-bucket-gh128
         Key: !Sub ${DirectoryCode}/code.zip
