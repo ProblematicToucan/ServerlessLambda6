@@ -1,12 +1,15 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: > 
+Description: >
   An AWS Serverless Application.
 
 Parameters:
   LambdaFunctionRole:
     Type: String
     Description: Role that used for lambda function.
+  DirectoryCode:
+    Type: String
+    Description: Name of this repository.
 
 Resources:
   LambdaFunction:
@@ -16,13 +19,12 @@ Resources:
       Description: Serverless lambda function with dotnet runtime
       Handler: ServerlessLambda6::ServerlessLambda6.Functions::Main
       Runtime: dotnet6
+      Role: !Sub ${{ LambdaFunctionRole }}
       CodeUri:
         Bucket: artifact-bucket-gh128
-        Key: serverlesslambda6/code.zip
-      Timeout: 3
-      Role: !Sub ${{ LambdaFunctionRole }}
+        Key: !Sub ${DirectoryCode}/code.zip
       Events:
-        RootGet:
+        MainGet:
           Type: Api
           Properties:
             Path: "/get"
@@ -31,9 +33,8 @@ Resources:
 Outputs:
   ApiGetURL:
     Description: API endpoint URL for Prod environment
-    Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get/
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get/
 
-  LambdaURI:
-    Description: URI lambda function
+  LambdaARN:
+    Description: ARN lambda function
     Value: !GetAtt LambdaFunction.arn
